@@ -29,6 +29,9 @@ limitations under the License.
   <script async custom-element="amp-selector" src="https://cdn.ampproject.org/v0/amp-selector-0.1.js"></script>
   <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.1.js"></script>
 
+  <script async custom-element="amp-bind"
+    src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+
   <style amp-custom>
     /*** uncss> filename: https://code.getmdl.io/1.3.0/material.indigo-pink.min.css ***/
     /**
@@ -140,6 +143,53 @@ limitations under the License.
 </head>
 
 <body>
+  <amp-state id="selected">
+    <script type="application/json">
+      {
+        "slide": 0,
+        "sku": "1001"
+      }
+    </script>
+  </amp-state>
+  <!-- Available shirts. Maps unique string identifier to color and image URL string. -->
+<amp-state id="shirts">
+  <script type="application/json">
+    {
+      "1001": {
+        "color": "black",
+        "image": "./shirts/black.jpg"
+      },
+      "1002": {
+        "color": "blue",
+        "image": "./shirts/blue.jpg"
+      },
+      "1010": {
+        "color": "brown",
+        "image": "./shirts/brown.jpg"
+      },
+      "1014": {
+        "color": "dark green",
+        "image": "./shirts/dark-green.jpg"
+      },
+      "1015": {
+        "color": "gray",
+        "image": "./shirts/gray.jpg"
+      },
+      "1016": {
+        "color": "light gray",
+        "image": "./shirts/light-gray.jpg"
+      },
+      "1021": {
+        "color": "navy",
+        "image": "./shirts/navy.jpg"
+      },
+      "1030": {
+        "color": "wine",
+        "image": "./shirts/wine.jpg"
+      }
+    }
+  </script>
+</amp-state>
   <header id="header" class="mdl-color--black mdl-color-text--white">
     <amp-img class="menu" src="./img/ic_menu_white_24dp_1x.png" width=24 height=24></amp-img>
     <span class="mdl-color-text--blue">AMP</span>PAREL
@@ -150,18 +200,20 @@ limitations under the License.
     <h5 class="title">MEN'S COTTON CREW NECK<br>LONG SLEEVE T-SHIRT</h5>
     <h6 class="rating"><span class="mdl-color-text--red">★★★★☆</span> <span class="mdl-color-text--grey">(14)</span></h6>
 
-    <amp-carousel type="slides" layout="fixed-height" height=250 id="carousel">
+    <amp-carousel type="slides" layout="fixed-height" height=250 id="carousel" on="slideChange:AMP.setState({selected: {slide: event.index}})"  >
       <!-- TODO: "Changing images in amp-carousel" -->
-      <amp-img width=200 height=250 src="./shirts/black.jpg"></amp-img>
-      <amp-img width=300 height=375 src="./shirts/black.jpg"></amp-img>
-      <amp-img width=400 height=500 src="./shirts/black.jpg"></amp-img>
+      <amp-img width=200 height=250 src="./shirts/black.jpg"  [src]="shirts[selected.sku].image"></amp-img>
+      <amp-img width=300 height=375 src="./shirts/black.jpg"  [src]="shirts[selected.sku].image"></amp-img>
+      <amp-img width=400 height=500 src="./shirts/black.jpg"  [src]="shirts[selected.sku].image"></amp-img>
     </amp-carousel>
 
     <!-- TODO: "Add a slide indicator" -->
     <p class="dots">
-      <span class="current"></span>
-      <span></span>
-      <span></span>
+
+      <!--El selected.slide es el valor que toma el "amp-carousel" y actualiza junto con el "amp-state"-->
+      <span [class]="selected.slide == 0 ? 'current' : ''" class="current"></span>
+      <span [class]="selected.slide == 1 ? 'current' : ''"></span>
+      <span [class]="selected.slide == 2 ? 'current' : ''"></span>
     </p>
 
     <form method="post" action-xhr="/shirts/addToCart" target="_top">
@@ -172,19 +224,19 @@ limitations under the License.
           Tip: <amp-selector> functions like an <input> element when nested in a <form>.
           @see https://www.ampproject.org/docs/reference/components/amp-form#inputs-and-fields
         -->
-        <amp-selector name="color">
+        <amp-selector name="color"  on="select:AMP.setState({selected: {sku: event.targetOption}})">
           <table>
             <tr>
-              <td><amp-img width=40 height=40 option="1001" src="./shirts/swatch/black.jpg" selected></amp-img></td>
-              <td><amp-img width=40 height=40 option="1002" src="./shirts/swatch/blue.jpg"></amp-img></td>
-              <td><amp-img width=40 height=40 option="1010" src="./shirts/swatch/brown.jpg"></amp-img></td>
-              <td><amp-img width=40 height=40 option="1014" src="./shirts/swatch/dark-green.jpg"></amp-img></td>
+              <td><amp-img width=40 height=40 option="1001" src="./shirts/swatch/black.jpg" selected  ></amp-img></td>
+              <td><amp-img width=40 height=40 option="1002" src="./shirts/swatch/blue.jpg"  ></amp-img></td>
+              <td><amp-img width=40 height=40 option="1010" src="./shirts/swatch/brown.jpg"  ></amp-img></td>
+              <td><amp-img width=40 height=40 option="1014" src="./shirts/swatch/dark-green.jpg"  ></amp-img></td>
             </tr>
             <tr>
-              <td><amp-img width=40 height=40 option="1015" src="./shirts/swatch/gray.jpg"></amp-img></td>
-              <td><amp-img width=40 height=40 option="1016" src="./shirts/swatch/light-gray.jpg"></amp-img></td>
-              <td><amp-img width=40 height=40 option="1021" src="./shirts/swatch/navy.jpg"></amp-img></td>
-              <td><amp-img width=40 height=40 option="1030" src="./shirts/swatch/wine.jpg"></amp-img></td>
+              <td><amp-img width=40 height=40 option="1015" src="./shirts/swatch/gray.jpg"  ></amp-img></td>
+              <td><amp-img width=40 height=40 option="1016" src="./shirts/swatch/light-gray.jpg"  ></amp-img></td>
+              <td><amp-img width=40 height=40 option="1021" src="./shirts/swatch/navy.jpg"  ></amp-img></td>
+              <td><amp-img width=40 height=40 option="1030" src="./shirts/swatch/wine.jpg"  ></amp-img></td>
             </tr>
           </table>
         </amp-selector>
